@@ -1,7 +1,11 @@
 @extends('Admin.Layout.AdminLayout')
 @section('title', 'Ticket Update')
 @section('AdminContent')
+    <?php
+    $user = auth()->user();
+    ?>
     <div class="content-wrapper" style="min-height: 1604.08px;" data-select2-id="31">
+
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
@@ -17,15 +21,10 @@
                 </div>
             </div>
         </section>
-
-
-
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-
                 <div class="card card-default">
-
                     <div class="card-header">
 
                         <a class="btn btn-danger btn-sm add_btn" href="{{ url('/admin/') }}/ticket-list">
@@ -39,11 +38,7 @@
                             </button>
                         </div>
                     </div>
-
-
-
                     <div class="card-body">
-
 
                         @if ($errors->any())
                             <div class="alert alert-default-danger">
@@ -55,60 +50,92 @@
                             </div>
                         @endif
 
-
-                        @if (session('success_message'))
-                            <div class="alert alert-success">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> {{ session('success_message') }}
-                            </div>
-                        @elseif (session('error_message'))
-                            <div class="alert alert-danger">
-                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> {{ session('error_message') }}
-                            </div>
-                        @else
-
-                        @endif
-
-                        <form action="{{ url('admin/ticket-update/'.$Ticket->ticket_id)}}" method="post" enctype="multipart/form-data">
-                            @csrf
-
-                            <div class="row">
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" value="{{ $Ticket->ticket_title }}" name="ticket_title" placeholder="Title">
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <h5 class="text-bold">Title</h5>
+                                    <p>{{ $Ticket->ticket_title }}</p>
                                 </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label>Description</label>
-                                        <textarea class="form-control" id="ticket_description" name="ticket_description" placeholder="Description ...">{{ $Ticket->ticket_description }}</textarea>
-                                    </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <h5 class="text-bold">Description</h5>
+                                    <p>{!! $Ticket->ticket_description !!}</p>
                                 </div>
+                            </div>
 
-
+                            @if($user->role == 1)
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Status</label>
-                                        <select class="form-control" id="ticket_status" name="status">
-                                            <option value="" selected="selected">Select One</option>
-                                            <option value="1" @if($Ticket->status == "1") {{ 'selected' }} @endif>Pending</option>
-                                            <option value="2" @if($Ticket->status == "2") {{ 'selected' }} @endif>Progress</option>
-                                            <option value="3" @if($Ticket->status == "3") {{ 'selected' }} @endif>Completed</option>
-                                        </select>
+                                        @if($Ticket->status == 2)
+                                            <button class="btn btn-primary">Already done</button>
+                                        @else
+                                            <button id="TicketDoneBtn" data-id="{{ $Ticket->ticket_id }}" class="btn btn-primary">Please done now</button>
+                                        @endif
                                     </div>
                                 </div>
+                            @endif
 
-                                <div class="col-md-12 text-center mt-3">
-                                    <button type="submit" class="btn btn-primary">Update</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Comment Write</h1>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-body">
+                        <form action="{{ url('admin/comment-entry') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row mb-2">
+                                <div class="col-sm-12">
+                                    <textarea class="form-control" name="comment_text" placeholder="....Comment Write...."></textarea>
+                                    <input type="hidden" class="form-control" name="ticket_id" value="{{ $Ticket->ticket_id }}">
+                                    <button type="submit" class="btn btn-primary mt-2">Send</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        @if(!$Comment->isEmpty())
+                            <div class="card card-default p-3">
+                                @foreach($Comment as $key=>$CommentItem)
+                                    <div class="card card-default p-3">
+                                        <h6 class="text-bold">{{ $CommentItem->creator_by }}</h6>
+                                        <p>{{ $CommentItem->comment_text }}</p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="modal fade" id="DoneTicketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ url('admin/ticket-done')}}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body p-3 text-center">
+                        <h5 class="mt-4">Do you want to Closes the ticket?</h5>
+                        <input id="TicketDoneId" type="hidden" name="ticket_id">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">No</button>
+                        <button  id="TaskDeleteConfirmBtn" type="submit" class="btn  btn-sm  btn-danger">Yes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -120,6 +147,23 @@
             placeholder: 'News Description',
             height: 120,
         });
+
+        $('#TicketDoneBtn').click(function(){
+            var id= $(this).data('id');
+            $('#TicketDoneId').val(id);
+            $('#DoneTicketModal').modal('show');
+        })
+
+
+
+        @if(Session::has('success_message'))
+            toastr.options ={"closeButton" : true,"progressBar" : true}
+            toastr.success("{{ session('success_message') }}");
+        @endif
+            @if(Session::has('error_message'))
+            toastr.options ={"closeButton" : true,"progressBar" : true}
+            toastr.error("{{ session('error_message') }}");
+        @endif
 
     </script>
 @endsection

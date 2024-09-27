@@ -21,8 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/ticket-create', [TicketController::class, 'TicketCreate']);
     Route::post('admin/ticket-entry', [TicketController::class, 'TicketEntry']);
     Route::get('admin/ticket-edit/{id}', [TicketController::class, 'TicketEdit']);
-    Route::post('admin/ticket-update/{id}', [TicketController::class, 'TicketUpdate']);
+    Route::post('admin/ticket-done', [TicketController::class, 'TicketDone']);
     Route::post('admin/ticket-delete', [TicketController::class, 'TicketDelete']);
+
+    Route::post('admin/comment-entry', [TicketController::class, 'CommentEntry']);
 
     Route::get('admin/profile', [ProfileController::class, 'ProfileIndex']);
     Route::get('admin/profile-password-update', [ProfileController::class, 'PasswordUpdatePage']);

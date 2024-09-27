@@ -109,9 +109,7 @@
                                         @if($TicketItem->status == 1)
                                             <span class="badge badge-primary">Pending</span>
                                         @elseif($TicketItem->status == 2)
-                                            <span class="badge badge-info">Progress</span>
-                                        @elseif($TicketItem->status == 3)
-                                            <span class="badge badge-success">Completed</span>
+                                            <span class="badge badge-success">Closes</span>
                                         @endif
                                     </td>
                                     <td class="project-actions text-center">

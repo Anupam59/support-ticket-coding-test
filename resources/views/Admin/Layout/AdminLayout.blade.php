@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="{{ asset('Admin/plugins/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('Admin/plugins/select2/css/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('Admin/plugins/toastr/toastr.css') }}">
     <link rel="stylesheet" href="{{asset('Admin/plugins/summernote/summernote-bs4.css')}}">
     <link rel="stylesheet" href="{{ asset('Admin/dist/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('Admin/dist/css/style.css') }}">
@@ -124,6 +125,8 @@
 <script src="{{ asset('Admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ asset('Admin/plugins/select2/js/select2.js') }}"></script>
+<!-- toastr -->
+<script src="{{asset('Admin/plugins/toastr/toastr.js')}}"></script>
 <!-- summernote -->
 <script src="{{asset('Admin/plugins/summernote/summernote-bs4.js')}}"></script>
 <!-- AdminLTE App -->
